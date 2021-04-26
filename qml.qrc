@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>chessRectangle.qml</file>
+        <file>chessPiece.qml</file>
+        <file>chessFunctions.js</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>alpha/black_bishop.svg</file>
+        <file>alpha/black_king.svg</file>
+        <file>alpha/black_knight.svg</file>
+        <file>alpha/black_pawn.svg</file>
+        <file>alpha/black_queen.svg</file>
+        <file>alpha/black_rook.svg</file>
+        <file>alpha/white_bishop.svg</file>
+        <file>alpha/white_king.svg</file>
+        <file>alpha/white_knight.svg</file>
+        <file>alpha/white_pawn.svg</file>
+        <file>alpha/white_queen.svg</file>
+        <file>alpha/white_rook.svg</file>
+    </qresource>
+</RCC>
