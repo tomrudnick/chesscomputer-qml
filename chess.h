@@ -5,9 +5,9 @@
 #include <QVector2D>
 #include <QPair>
 
-#include "chesspiece.h"
+#include "chesspieces/chesspiece.h"
 #include "chessmove.h"
-#include "uci.h"
+#include "uci/uci.h"
 
 struct ChessHistory{
     ChessPiece* chessBoard[64];

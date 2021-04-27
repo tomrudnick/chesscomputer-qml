@@ -7,7 +7,7 @@
 #include <QVector>
 #include <QVector2D>
 #include "chess.h"
-#include "uci.h"
+#include "uci/uci.h"
 
 class ChessCom : public QObject
 {

@@ -1,11 +1,11 @@
 ﻿#include "chess.h"
 #include "chessHelper.h"
-#include "bishop.h"
-#include "king.h"
-#include "pawn.h"
-#include "knight.h"
-#include "queen.h"
-#include "rook.h"
+#include "chesspieces/bishop.h"
+#include "chesspieces/king.h"
+#include "chesspieces/pawn.h"
+#include "chesspieces/knight.h"
+#include "chesspieces/queen.h"
+#include "chesspieces/rook.h"
 #include <QDebug>
 
 Chess::Chess()

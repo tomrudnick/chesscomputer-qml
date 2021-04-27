@@ -9,19 +9,19 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        bishop.cpp \
         chess.cpp \
         chessHelper.cpp \
         chesscom.cpp \
         chessmove.cpp \
-        chesspiece.cpp \
-        king.cpp \
-        knight.cpp \
+        chesspieces/bishop.cpp \
+        chesspieces/chesspiece.cpp \
+        chesspieces/king.cpp \
+        chesspieces/knight.cpp \
+        chesspieces/pawn.cpp \
+        chesspieces/queen.cpp \
+        chesspieces/rook.cpp \
         main.cpp \
-        pawn.cpp \
-        queen.cpp \
-        rook.cpp \
-        uci.cpp
+        uci/uci.cpp
 
 RESOURCES += qml.qrc
 
@@ -37,15 +37,15 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    bishop.h \
     chess.h \
     chessHelper.h \
     chesscom.h \
     chessmove.h \
-    chesspiece.h \
-    king.h \
-    knight.h \
-    pawn.h \
-    queen.h \
-    rook.h \
-    uci.h
+    chesspieces/bishop.h \
+    chesspieces/chesspiece.h \
+    chesspieces/king.h \
+    chesspieces/knight.h \
+    chesspieces/pawn.h \
+    chesspieces/queen.h \
+    chesspieces/rook.h \
+    uci/uci.h
