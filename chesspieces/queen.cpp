@@ -5,7 +5,7 @@ Queen::Queen(QVector2D pos, int chessPiece, short id) : ChessPiece(pos, chessPie
 
 }
 
-QVector<ChessMove> Queen::possibleMoves(ChessPiece** board)
+QVector<ChessMove> Queen::possibleMoves(std::shared_ptr<ChessPiece>* board) const
 {
     QVector<ChessMove> possibleMoveList;
     //Diagonal Moves
@@ -119,7 +119,7 @@ QVector<ChessMove> Queen::possibleMoves(ChessPiece** board)
     return possibleMoveList;
 }
 
-ChessPiece *Queen::clone() const
+std::unique_ptr<ChessPiece> Queen::clone() const
 {
-    return new Queen(*this);
+    return std::make_unique<Queen>(*this);
 }

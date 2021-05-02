@@ -6,7 +6,7 @@ Knight::Knight(QVector2D pos, int chessPiece, short id) : ChessPiece(pos, chessP
 
 }
 
-QVector<ChessMove> Knight::possibleMoves(ChessPiece** board)
+QVector<ChessMove> Knight::possibleMoves(std::shared_ptr<ChessPiece>* board) const
 {
     QVector<ChessMove> possibleMoveList;
     int offsets[8][2] = {{1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}};
@@ -26,7 +26,7 @@ QVector<ChessMove> Knight::possibleMoves(ChessPiece** board)
 
 }
 
-ChessPiece *Knight::clone() const
+std::unique_ptr<ChessPiece> Knight::clone() const
 {
-    return new Knight(*this);
+    return std::make_unique<Knight>(*this);
 }

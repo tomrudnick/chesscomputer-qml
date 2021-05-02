@@ -34,18 +34,18 @@ Chess::Chess()
         if(chessSetup[i] != 0) {
                QVector2D pos = ChessHelper::indexToVect(i);
                switch (chessSetup[i]) {
-                    case -1: chessBoard[i] = new Pawn(pos, chessSetup[i], i); break;
-                    case 1 : chessBoard[i] = new Pawn(pos, chessSetup[i], i); break;
-                    case -2 : chessBoard[i] = new Knight(pos, chessSetup[i], i); break;
-                    case 2 : chessBoard[i] = new Knight(pos, chessSetup[i], i); break;
-                    case -3 : chessBoard[i] = new Bishop(pos, chessSetup[i], i); break;
-                    case 3 : chessBoard[i] = new Bishop(pos, chessSetup[i], i); break;
-                    case -4 : chessBoard[i] = new Rook(pos, chessSetup[i], i); break;
-                    case 4 : chessBoard[i] = new Rook(pos, chessSetup[i], i); break;
-                    case -5 : chessBoard[i] = new Queen(pos, chessSetup[i], i); break;
-                    case 5 : chessBoard[i] = new Queen(pos, chessSetup[i], i); break;
-                    case -6 : chessBoard[i] = new King(pos, chessSetup[i], i); break;
-                    case 6 : chessBoard[i] = new King(pos, chessSetup[i], i); break;
+                    case -1: chessBoard[i] = std::make_shared<Pawn>(Pawn(pos, chessSetup[i], i)); break;
+                    case 1 : chessBoard[i] = std::make_shared<Pawn>(Pawn(pos, chessSetup[i], i)); break;
+                    case -2 : chessBoard[i] = std::make_shared<Knight>(Knight(pos, chessSetup[i], i)); break;
+                    case 2 : chessBoard[i] = std::make_shared<Knight>(Knight(pos, chessSetup[i], i)); break;
+                    case -3 : chessBoard[i] = std::make_shared<Bishop>(Bishop(pos, chessSetup[i], i)); break;
+                    case 3 : chessBoard[i] = std::make_shared<Bishop>(Bishop(pos, chessSetup[i], i)); break;
+                    case -4 : chessBoard[i] = std::make_shared<Rook>(Rook(pos, chessSetup[i], i)); break;
+                    case 4 : chessBoard[i] = std::make_shared<Rook>(Rook(pos, chessSetup[i], i)); break;
+                    case -5 : chessBoard[i] = std::make_shared<Queen>(Queen(pos, chessSetup[i], i)); break;
+                    case 5 : chessBoard[i] = std::make_shared<Queen>(Queen(pos, chessSetup[i], i)); break;
+                    case -6 : chessBoard[i] = std::make_shared<King>(King(pos, chessSetup[i], i)); break;
+                    case 6 : chessBoard[i] = std::make_shared<King>(King(pos, chessSetup[i], i)); break;
                }
         } else {
             chessBoard[i] = NULL;
@@ -62,7 +62,7 @@ bool Chess::makeMove(int fromIndex, int toIndex) {
         return false;
     }
 
-    ChessPiece* movingPiece = chessBoard[fromIndex];
+    std::shared_ptr<ChessPiece> movingPiece = chessBoard[fromIndex];
 
     if(whosTurn != movingPiece->getColor())
         return false;
@@ -99,8 +99,7 @@ bool Chess::makeMove(int fromIndex, int toIndex) {
        }
     } else if(validMove.getStatus() == ChessHelper::enPassent) {
         if(history.size() > 1) {
-            ChessHistory lastHistory = history.at(history.size() - 1);
-            ChessMove lastMove = lastHistory.move;
+            ChessMove lastMove = history.at(history.size() - 1).move;
             std::unique_ptr<ChessMove> calculatedNeededMove;
             int capturedPawnIndex = -1;
             if(whosTurn == ChessHelper::white) {
@@ -121,7 +120,7 @@ bool Chess::makeMove(int fromIndex, int toIndex) {
             if(lastMove != *calculatedNeededMove)
                 return false;
 
-            ChessPiece* capturedPiece = chessBoard[capturedPawnIndex];
+            std::shared_ptr<ChessPiece> capturedPiece = chessBoard[capturedPawnIndex];
             chessBoard[capturedPawnIndex] = NULL;
             chessBoard[fromIndex] = NULL;
             chessBoard[toIndex] = movingPiece;
@@ -142,7 +141,7 @@ bool Chess::makeMove(int fromIndex, int toIndex) {
         //TODO: das hier machen ^
         //hab aber kein bock
     } else if(validMove.getStatus() == ChessHelper::capturePiece) {
-        ChessPiece* capturedPiece = chessBoard[toIndex];
+        std::shared_ptr<ChessPiece> capturedPiece = chessBoard[toIndex];
 
         chessBoard[fromIndex] = NULL;
         chessBoard[toIndex] = movingPiece;
@@ -197,10 +196,10 @@ bool Chess::makeMove(ChessMove move)
     return makeMove(ChessHelper::vectToIndex(move.getStart()), ChessHelper::vectToIndex(move.getEnd()));
 }
 
-QVector<const ChessPiece*> Chess::getUpdates()
+QVector<std::shared_ptr<const ChessPiece>> Chess::getUpdates()
 {
 
-    QVector<const ChessPiece*> updates;
+    QVector<std::shared_ptr<const ChessPiece>> updates;
 
     for(int i = 0; i < this->updatedPieces.size(); i++) {
         updates.append(updatedPieces.at(i));
@@ -241,38 +240,37 @@ bool Chess::undo()
         if(tmpHistory.chessBoard[i] != NULL)
             delete tmpHistory.chessBoard[i];
     }*/
-    ChessHistory latestHistory = history.at(history.size() - 3);
-    history.pop_back();
-    history.pop_back();
 
-    this->whiteKingSideCastled = latestHistory.whiteKingSideCastled;
-    this->whiteQueenSideCastled = latestHistory.whiteQueenSideCastled;
-    this->blackKingSideCastled = latestHistory.blackKingSideCastled;
-    this->blackQueenSideCastled = latestHistory.blackQueenSideCastled;
-    this->whosTurn = latestHistory.whosTurn;
-    this->check = latestHistory.check;
+    int historyIndex = history.size() - 3;
+
+    this->whiteKingSideCastled = history.at(historyIndex).whiteKingSideCastled;
+    this->whiteQueenSideCastled = history.at(historyIndex).whiteQueenSideCastled;
+    this->blackKingSideCastled = history.at(historyIndex).blackKingSideCastled;
+    this->blackQueenSideCastled = history.at(historyIndex).blackQueenSideCastled;
+    this->whosTurn = history.at(historyIndex).whosTurn;
+    this->check = history.at(historyIndex).check;
 
     for(int i = 0; i < 64; i++) {
-        //Deleting current board
-        //if(this->chessBoard[i] != NULL)
-        //    delete this->chessBoard[i];
         //copying old board to current board
-        if(latestHistory.chessBoard[i] != NULL) {
-            this->chessBoard[i] = latestHistory.chessBoard[i]->clone();
+        if(history.at(historyIndex).chessBoard[i] != NULL) {
+            this->chessBoard[i] = history.at(historyIndex).chessBoard[i]->clone();
         } else {
             this->chessBoard[i] = NULL;
         }
         //adding all pieces of old board to updatedPieces list
-        if(latestHistory.chessBoard[i] != NULL)
-            updatedPieces.append(latestHistory.chessBoard[i]);
+        if(this->chessBoard[i] != NULL)
+            updatedPieces.append(this->chessBoard[i]);
     }
+
+    history.pop_back();
+    history.pop_back();
 
     return true;
 }
 
 bool Chess::canHit(hit hit)
 {
-    QVector<ChessPiece*> allMovablePieces;
+    QVector<std::shared_ptr<ChessPiece>> allMovablePieces;
     QVector<ChessMove> allPossibleMoves;
     int kingPosition = -1;
     for(int i = 0; i < 64; i++) {
@@ -347,21 +345,20 @@ bool Chess::castlingCheck(bool *castleSide, ChessMove kingMove, int kingCheckPos
 
 void Chess::addBoardToHistory(const ChessMove& move)
 {
-    ChessPiece* tmpBoard[64];
+    std::unique_ptr<ChessPiece> tmpBoard[64];
     for(int i = 0; i < 64; i++) {
         if(chessBoard[i] == NULL)
             tmpBoard[i] = NULL;
         else {
-            ChessPiece* piece = chessBoard[i]->clone();
-            tmpBoard[i] = piece;
+            tmpBoard[i] = chessBoard[i]->clone();
         }
     }
 
-    ChessHistory historyStruct(tmpBoard, move, whosTurn, check,
-                               whiteQueenSideCastled, whiteKingSideCastled,
-                               blackQueenSideCastled, blackKingSideCastled);
 
-    history.append(historyStruct);
+
+    history.append(ChessHistory(tmpBoard, move, whosTurn, check,
+                                whiteQueenSideCastled, whiteKingSideCastled,
+                                blackQueenSideCastled, blackKingSideCastled));
 
 }
 

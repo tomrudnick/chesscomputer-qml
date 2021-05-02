@@ -5,14 +5,15 @@
 #include "chessHelper.h"
 #include "chessmove.h"
 #include <QVector>
+#include <memory>
 
 class ChessPiece
 {
 public:
     ChessPiece(QVector2D pos, int chessPiece, short id);
     //virtual ~ChessPiece();
-    virtual QVector<ChessMove> possibleMoves(ChessPiece** board) = 0;
-    virtual ChessPiece* clone() const = 0;
+    virtual QVector<ChessMove> possibleMoves(std::shared_ptr<ChessPiece>* board) const = 0;
+    virtual std::unique_ptr<ChessPiece> clone() const = 0;
 
 
     void updatePos(QVector2D newPos);
@@ -42,6 +43,7 @@ protected:
     ChessHelper::color color;
     bool captured;
     bool moved;
+
 
 private:
     int chessPiece;

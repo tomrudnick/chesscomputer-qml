@@ -4,13 +4,14 @@
 #include <QVector>
 #include <QVector2D>
 #include <QPair>
+#include <memory>
 
 #include "chesspieces/chesspiece.h"
 #include "chessmove.h"
 #include "uci/uci.h"
 
 struct ChessHistory{
-    ChessPiece* chessBoard[64];
+    std::unique_ptr<ChessPiece> chessBoard[64];
     ChessMove move;
     ChessHelper::color whosTurn;
     ChessHelper::Check check;
@@ -19,7 +20,7 @@ struct ChessHistory{
     bool blackQueenSideCastled;
     bool blackKingSideCastled;
 
-    ChessHistory(ChessPiece *chessBoard[64],
+    ChessHistory(std::unique_ptr<ChessPiece> chessBoard[64],
                  const ChessMove& move,
                  ChessHelper::color whosTurn,
                  ChessHelper::Check check,
@@ -30,8 +31,41 @@ struct ChessHistory{
                                                                blackQueenSideCastled(bQSC),
                                                                blackKingSideCastled(bKSC){
         for(int i = 0; i < 64; i++) {
-            this->chessBoard[i] = chessBoard[i];
+            this->chessBoard[i] = std::move(chessBoard[i]);
         }
+    }
+    //move constructor
+    ChessHistory(ChessHistory&& history) : move(history.move),
+                                                whosTurn(history.whosTurn), check(history.check),
+                                                whiteQueenSideCastled(history.whiteQueenSideCastled),
+                                                whiteKingSideCastled(history.whiteKingSideCastled),
+                                                blackQueenSideCastled(history.blackQueenSideCastled),
+                                                blackKingSideCastled(history.blackKingSideCastled){
+
+        for(int i = 0; i < 64; i++) {
+            if(history.chessBoard[i] == NULL)
+                this->chessBoard[i] = NULL;
+            else
+                this->chessBoard[i] = std::move(history.chessBoard[i]);
+        }
+
+    }
+    //copy constructor
+    ChessHistory(const ChessHistory& history) : move(history.move),
+                                                whosTurn(history.whosTurn), check(history.check),
+                                                whiteQueenSideCastled(history.whiteQueenSideCastled),
+                                                whiteKingSideCastled(history.whiteKingSideCastled),
+                                                blackQueenSideCastled(history.blackQueenSideCastled),
+                                                blackKingSideCastled(history.blackKingSideCastled){
+
+        for(int i = 0; i < 64; i++) {
+            //this->chessBoard[i] = std::move(history.chessBoard[i]);
+            if(history.chessBoard[i] == NULL)
+                this->chessBoard[i] = NULL;
+            else
+                this->chessBoard[i] = history.chessBoard[i]->clone();
+        }
+
     }
 };
 
@@ -42,7 +76,7 @@ public:
     Chess();
     bool makeMove(int fromIndex, int toIndex);
     bool makeMove(ChessMove move);
-    QVector<const ChessPiece*> getUpdates();
+    QVector<std::shared_ptr<const ChessPiece>> getUpdates();
     QVector<ChessMove> getMoves();
     QVector<QPair<QVector2D, short>> getIds();
     bool undo();
@@ -54,8 +88,8 @@ private:
         nextMove
     };
 
-    ChessPiece* chessBoard[64];
-    QVector<ChessPiece*> updatedPieces;
+    std::shared_ptr<ChessPiece> chessBoard[64];
+    QVector<std::shared_ptr<ChessPiece>> updatedPieces;
     QVector<ChessHistory> history;
 
     bool whiteQueenSideCastled;
@@ -69,8 +103,6 @@ private:
 
     ChessHelper::color whosTurn;
     ChessHelper::Check check;
-
-
 
 
 

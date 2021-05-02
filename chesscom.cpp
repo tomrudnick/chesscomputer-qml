@@ -64,9 +64,9 @@ void ChessCom::undo()
 
 void ChessCom::updateUI()
 {
-    QVector<const ChessPiece*> updatePieces = chess.getUpdates();
+    QVector<std::shared_ptr<const ChessPiece>> updatePieces = chess.getUpdates();
     for(int i = 0; i < updatePieces.size(); i++ ) {
-        const ChessPiece* piece = updatePieces.at(i);
+        std::shared_ptr<const ChessPiece> piece = updatePieces.at(i);
         int lastPos = ChessHelper::vectToIndex(piece->getLastPos());
         int newPos = ChessHelper::vectToIndex(piece->getCurrentPos());
         qInfo() << "Piece: " << piece->getChessPiece() << " moved from: " << lastPos << " to: " << newPos;

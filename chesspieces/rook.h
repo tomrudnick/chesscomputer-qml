@@ -7,9 +7,8 @@ class Rook : public ChessPiece
 {
 public:
     Rook(QVector2D pos, int chessPiece, short id);
-    ~Rook();
-    QVector<ChessMove> possibleMoves(ChessPiece** board);
-    ChessPiece* clone() const;
+    QVector<ChessMove> possibleMoves(std::shared_ptr<ChessPiece>* board) const;
+    virtual std::unique_ptr<ChessPiece> clone() const;
 };
 
 #endif // ROOK_H

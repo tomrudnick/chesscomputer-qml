@@ -7,7 +7,7 @@ Pawn::Pawn(QVector2D pos, int chessPiece, short id) : ChessPiece(pos, chessPiece
 
 }
 
-QVector<ChessMove> Pawn::possibleMoves(ChessPiece** board)
+QVector<ChessMove> Pawn::possibleMoves(std::shared_ptr<ChessPiece>* board) const
 {
     QVector<ChessMove> possibleMoveList;
     int offset = this->color == ChessHelper::color::white ? 1 : -1;
@@ -49,7 +49,7 @@ QVector<ChessMove> Pawn::possibleMoves(ChessPiece** board)
     if((currentPos.y() == 4 && this->color == ChessHelper::color::white) ||
             (currentPos.y() == 3 && this->color == ChessHelper::color::black)) {
         tmp = QVector2D(currentPos.x() - 1, currentPos.y());
-        ChessPiece* tmpPiece = board[ChessHelper::vectToIndex(tmp)];
+        std::shared_ptr<const ChessPiece> tmpPiece = board[ChessHelper::vectToIndex(tmp)];
         if(tmp.x() >= 0 && tmpPiece != NULL && qAbs(tmpPiece->getChessPiece()) == 1 && tmpPiece->getColor() != this->color){
             tmp.setY(tmp.y() + 1 * offset);
             possibleMoveList.append(ChessMove(currentPos, tmp, ChessHelper::MoveStatus::enPassent));
@@ -67,7 +67,7 @@ QVector<ChessMove> Pawn::possibleMoves(ChessPiece** board)
     return possibleMoveList;
 }
 
-ChessPiece *Pawn::clone() const
+std::unique_ptr<ChessPiece> Pawn::clone() const
 {
-    return new Pawn(*this);
+    return std::make_unique<Pawn>(*this);
 }

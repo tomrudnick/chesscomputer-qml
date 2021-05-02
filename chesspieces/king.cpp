@@ -8,7 +8,7 @@ King::King(QVector2D pos, int chessPiece, short id) : ChessPiece(pos, chessPiece
 
 
 
-QVector<ChessMove> King::possibleMoves(ChessPiece** board)
+QVector<ChessMove> King::possibleMoves(std::shared_ptr<ChessPiece>* board) const
 {
     int offsets[8][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {-1, 1}, {1, -1}, {-1, -1}};
     QVector<ChessMove> possibleMoveList;
@@ -35,7 +35,7 @@ QVector<ChessMove> King::possibleMoves(ChessPiece** board)
 
 }
 
-ChessPiece* King::clone() const
+std::unique_ptr<ChessPiece> King::clone() const
 {
-    return new King(*this);
+    return std::make_unique<King>(*this);
 }

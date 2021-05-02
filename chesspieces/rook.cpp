@@ -8,7 +8,7 @@ Rook::Rook(QVector2D pos, int chessPiece, short id) : ChessPiece(pos, chessPiece
 }
 
 
-QVector<ChessMove> Rook::possibleMoves(ChessPiece** board)
+QVector<ChessMove> Rook::possibleMoves(std::shared_ptr<ChessPiece>* board) const
 {
     QVector<ChessMove> possibleMoveList;
 
@@ -68,7 +68,7 @@ QVector<ChessMove> Rook::possibleMoves(ChessPiece** board)
     return possibleMoveList;
 }
 
-ChessPiece *Rook::clone() const
+std::unique_ptr<ChessPiece> Rook::clone() const
 {
-    return new Rook(*this);
+    return std::make_unique<Rook>(*this);
 }

@@ -5,7 +5,7 @@ Bishop::Bishop(QVector2D pos, int chessPiece, short id) : ChessPiece(pos, chessP
 
 }
 
-QVector<ChessMove> Bishop::possibleMoves(ChessPiece** board)
+QVector<ChessMove> Bishop::possibleMoves(std::shared_ptr<ChessPiece>* board) const
 {
     QVector<ChessMove> possibleMoveList;
     for(int x = currentPos.x() + 1, y = currentPos.y() + 1; x < 8 && y < 8; x++, y++) {
@@ -63,9 +63,9 @@ QVector<ChessMove> Bishop::possibleMoves(ChessPiece** board)
     return possibleMoveList;
 }
 
-ChessPiece *Bishop::clone() const
+std::unique_ptr<ChessPiece> Bishop::clone() const
 {
-    return new Bishop(*this);
+    return std::make_unique<Bishop>(*this);
 }
 
 
