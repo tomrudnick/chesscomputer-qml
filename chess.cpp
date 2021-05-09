@@ -48,7 +48,7 @@ Chess::Chess()
                     case 6 : chessBoard[i] = std::make_shared<King>(King(pos, chessSetup[i], i)); break;
                }
         } else {
-            chessBoard[i] = NULL;
+            chessBoard[i] = nullptr;
         }
     }
     addBoardToHistory(ChessMove(QVector2D(0,0), QVector2D(0,0), ChessHelper::invalidMove));
@@ -58,7 +58,7 @@ Chess::Chess()
 
 bool Chess::makeMove(int fromIndex, int toIndex) {
 
-    if(chessBoard[fromIndex] == NULL) {
+    if(chessBoard[fromIndex] == nullptr) {
         return false;
     }
 
@@ -105,14 +105,14 @@ bool Chess::makeMove(int fromIndex, int toIndex) {
             if(whosTurn == ChessHelper::white) {
                 QVector2D to(validMove.getEnd().x(), 4);
                 capturedPawnIndex = ChessHelper::vectToIndex(to);
-                if(chessBoard[capturedPawnIndex] == NULL || chessBoard[capturedPawnIndex]->getChessPiece() != -1)
+                if(chessBoard[capturedPawnIndex] == nullptr || chessBoard[capturedPawnIndex]->getChessPiece() != -1)
                     return false;
                 calculatedNeededMove = std::make_unique<ChessMove>(QVector2D(validMove.getEnd().x(), 6), to);
 
             } else {
                 QVector2D to (validMove.getEnd().x(), 3);
                 capturedPawnIndex = ChessHelper::vectToIndex(to);
-                if(chessBoard[capturedPawnIndex] == NULL || chessBoard[capturedPawnIndex]->getChessPiece() != 1)
+                if(chessBoard[capturedPawnIndex] == nullptr || chessBoard[capturedPawnIndex]->getChessPiece() != 1)
                     return false;
                 calculatedNeededMove = std::make_unique<ChessMove>(QVector2D(validMove.getEnd().x(), 1), to);
             }
@@ -121,14 +121,14 @@ bool Chess::makeMove(int fromIndex, int toIndex) {
                 return false;
 
             std::shared_ptr<ChessPiece> capturedPiece = chessBoard[capturedPawnIndex];
-            chessBoard[capturedPawnIndex] = NULL;
-            chessBoard[fromIndex] = NULL;
+            chessBoard[capturedPawnIndex] = nullptr;
+            chessBoard[fromIndex] = nullptr;
             chessBoard[toIndex] = movingPiece;
 
             if(canHit(hit::now)) {
                 chessBoard[capturedPawnIndex] = capturedPiece;
                 chessBoard[fromIndex] = chessBoard[toIndex];
-                chessBoard[toIndex] = NULL;
+                chessBoard[toIndex] = nullptr;
                 return false;
             }
             capturedPiece->setCaptured(true);
@@ -143,7 +143,7 @@ bool Chess::makeMove(int fromIndex, int toIndex) {
     } else if(validMove.getStatus() == ChessHelper::capturePiece) {
         std::shared_ptr<ChessPiece> capturedPiece = chessBoard[toIndex];
 
-        chessBoard[fromIndex] = NULL;
+        chessBoard[fromIndex] = nullptr;
         chessBoard[toIndex] = movingPiece;
 
 
@@ -158,11 +158,11 @@ bool Chess::makeMove(int fromIndex, int toIndex) {
         updatedPieces.append(movingPiece);
         updatedPieces.append(capturedPiece);
     } else if(validMove.getStatus() == ChessHelper::standardMove) {
-        chessBoard[fromIndex] = NULL;
+        chessBoard[fromIndex] = nullptr;
         chessBoard[toIndex] = movingPiece;
         if(canHit(hit::now)) {
             chessBoard[fromIndex] = chessBoard[toIndex];
-            chessBoard[toIndex] = NULL;
+            chessBoard[toIndex] = nullptr;
             return false;
         }
         chessBoard[toIndex]->updatePos(ChessHelper::indexToVect(toIndex));
@@ -223,7 +223,7 @@ QVector<QPair<QVector2D, short> > Chess::getIds()
 {
     QVector<QPair<QVector2D, short>> ids;
     for(int i = 0; i < 64; i++) {
-        if(chessBoard[i] != NULL)
+        if(chessBoard[i] != nullptr)
             ids.append(QPair<QVector2D, short>(chessBoard[i]->getCurrentPos(), chessBoard[i]->getId()));
     }
     return ids;
@@ -237,7 +237,7 @@ bool Chess::undo()
     //We allways want to undo two moves
     //ChessHistory tmpHistory = history.at(history.size() - 1);
     /*for(int i = 0; i < 64; i++) {
-        if(tmpHistory.chessBoard[i] != NULL)
+        if(tmpHistory.chessBoard[i] != nullptr)
             delete tmpHistory.chessBoard[i];
     }*/
 
@@ -252,13 +252,13 @@ bool Chess::undo()
 
     for(int i = 0; i < 64; i++) {
         //copying old board to current board
-        if(history.at(historyIndex).chessBoard[i] != NULL) {
+        if(history.at(historyIndex).chessBoard[i] != nullptr) {
             this->chessBoard[i] = history.at(historyIndex).chessBoard[i]->clone();
         } else {
-            this->chessBoard[i] = NULL;
+            this->chessBoard[i] = nullptr;
         }
         //adding all pieces of old board to updatedPieces list
-        if(this->chessBoard[i] != NULL)
+        if(this->chessBoard[i] != nullptr)
             updatedPieces.append(this->chessBoard[i]);
     }
 
@@ -274,7 +274,7 @@ bool Chess::canHit(hit hit)
     QVector<ChessMove> allPossibleMoves;
     int kingPosition = -1;
     for(int i = 0; i < 64; i++) {
-        if(chessBoard[i] != NULL )  {
+        if(chessBoard[i] != nullptr )  {
             if((chessBoard[i]->getColor() != whosTurn && hit == now) || (chessBoard[i]->getColor() == whosTurn && hit == nextMove)) {
                 allMovablePieces.append(chessBoard[i]);
             } else if(qAbs(chessBoard[i]->getChessPiece()) == 6)
@@ -302,7 +302,7 @@ bool Chess::castlingCheck(bool *castleSide, ChessMove kingMove, int kingCheckPos
     if(!*castleSide &&
         !((check == ChessHelper::blackCheck && color == ChessHelper::black) ||
           (check == ChessHelper::whiteCheck && color == ChessHelper::white)) &&
-        chessBoard[rookPos] != NULL &&
+        chessBoard[rookPos] != nullptr &&
         chessBoard[rookPos]->getChessPiece() == piece &&
         chessBoard[rookPos]->getMoved() == false) {
 
@@ -310,24 +310,24 @@ bool Chess::castlingCheck(bool *castleSide, ChessMove kingMove, int kingCheckPos
         int endPos = ChessHelper::vectToIndex(kingMove.getEnd());
 
         chessBoard[kingCheckPos] = chessBoard[startPos];
-        chessBoard[startPos] = NULL;
+        chessBoard[startPos] = nullptr;
         if(canHit(hit::now)) {
             chessBoard[startPos] = chessBoard[kingCheckPos];
-            chessBoard[kingCheckPos] = NULL;
+            chessBoard[kingCheckPos] = nullptr;
             return false;
         }
 
         chessBoard[endPos] = chessBoard[kingCheckPos];
-        chessBoard[kingCheckPos] = NULL;
+        chessBoard[kingCheckPos] = nullptr;
 
         if(canHit(hit::now)) {
             chessBoard[startPos] = chessBoard[endPos];
-            chessBoard[endPos] = NULL;
+            chessBoard[endPos] = nullptr;
             return false;
         }
 
         chessBoard[kingCheckPos] = chessBoard[rookPos];
-        chessBoard[rookPos] = NULL;
+        chessBoard[rookPos] = nullptr;
 
         chessBoard[kingCheckPos]->updatePos(ChessHelper::indexToVect(kingCheckPos));
         chessBoard[endPos]->updatePos(ChessHelper::indexToVect(endPos));
@@ -347,8 +347,8 @@ void Chess::addBoardToHistory(const ChessMove& move)
 {
     std::unique_ptr<ChessPiece> tmpBoard[64];
     for(int i = 0; i < 64; i++) {
-        if(chessBoard[i] == NULL)
-            tmpBoard[i] = NULL;
+        if(chessBoard[i] == nullptr)
+            tmpBoard[i] = nullptr;
         else {
             tmpBoard[i] = chessBoard[i]->clone();
         }

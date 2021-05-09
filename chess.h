@@ -43,8 +43,8 @@ struct ChessHistory{
                                                 blackKingSideCastled(history.blackKingSideCastled){
 
         for(int i = 0; i < 64; i++) {
-            if(history.chessBoard[i] == NULL)
-                this->chessBoard[i] = NULL;
+            if(history.chessBoard[i] == nullptr)
+                this->chessBoard[i] = nullptr;
             else
                 this->chessBoard[i] = std::move(history.chessBoard[i]);
         }
@@ -60,8 +60,8 @@ struct ChessHistory{
 
         for(int i = 0; i < 64; i++) {
             //this->chessBoard[i] = std::move(history.chessBoard[i]);
-            if(history.chessBoard[i] == NULL)
-                this->chessBoard[i] = NULL;
+            if(history.chessBoard[i] == nullptr)
+                this->chessBoard[i] = nullptr;
             else
                 this->chessBoard[i] = history.chessBoard[i]->clone();
         }
@@ -77,8 +77,8 @@ struct ChessHistory{
             this->whiteQueenSideCastled = other.whiteQueenSideCastled;
             this->blackQueenSideCastled = other.blackQueenSideCastled;
             for(int i = 0; i < 64; i++) {
-                if(other.chessBoard[i] == NULL)
-                    this->chessBoard[i] = NULL;
+                if(other.chessBoard[i] == nullptr)
+                    this->chessBoard[i] = nullptr;
                 else
                     this->chessBoard[i] = other.chessBoard[i]->clone();
             }

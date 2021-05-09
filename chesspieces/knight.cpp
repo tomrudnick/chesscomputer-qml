@@ -15,7 +15,7 @@ QVector<ChessMove> Knight::possibleMoves(std::shared_ptr<ChessPiece>* board) con
         QVector2D pos = QVector2D(currentPos.x() + offsets[i][0], currentPos.y() + offsets[i][1]);
         if(pos.x() >= 0 && pos.x() < 8 && pos.y() >= 0 && pos.y() < 8) {
             int index = ChessHelper::vectToIndex(pos);
-            if(board[index] == NULL) {
+            if(board[index] == nullptr) {
                 possibleMoveList.append(ChessMove(currentPos, pos, ChessHelper::MoveStatus::standardMove));
             } else if(board[index]->getColor() != this->color) {
                 possibleMoveList.append(ChessMove(currentPos, pos, ChessHelper::MoveStatus::capturePiece));
