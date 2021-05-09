@@ -1,5 +1,6 @@
 ﻿#include "uci.h"
 #include <QMap>
+#include <QRegularExpression>
 
 
 UCI::UCI(QObject *parent) : QObject(parent)
@@ -172,7 +173,7 @@ void UCI::parsingInfo()
             }
         }
 
-        ChessMove parsedMove = ChessMove::parseChessMove(map.value("pv").simplified().leftRef(4).toString());
+        ChessMove parsedMove = ChessMove::parseChessMove(map.value("pv").simplified().left(4));
         uci_responds.append(UCI_MOVE_RESPOND(map.value("depth").toInt(), map.value("scorecp").toFloat() / 100, parsedMove));
     }
     emit info(uci_responds);
@@ -180,9 +181,13 @@ void UCI::parsingInfo()
 
 void UCI::parsingBestMove(QString bestMoveString)
 {
-    QRegExp bestMoveReg("bestmove [a-h]\\d[a-h]\\d");
-    int pos = bestMoveReg.indexIn(bestMoveString);
-    ChessMove parsedMove = ChessMove::parseChessMove(bestMoveString.midRef(pos + 9, 4).toString());
+    QRegularExpression bestMoveReg("bestmove [a-h]\\d[a-h]\\d");
+    QRegularExpressionMatch match = bestMoveReg.match(bestMoveString);
+    if(match.hasMatch()) {
 
-    emit bestMove(parsedMove);
+        int pos = match.capturedStart(0);
+        qInfo() << "Matching Pos: " << pos << " For string: " << bestMoveString;
+        ChessMove parsedMove = ChessMove::parseChessMove(bestMoveString.mid(pos + 9, 4));
+        emit bestMove(parsedMove);
+    }
 }

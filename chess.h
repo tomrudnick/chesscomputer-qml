@@ -67,6 +67,24 @@ struct ChessHistory{
         }
 
     }
+    ChessHistory& operator=(const ChessHistory& other) {
+        if(this != &other)  {
+            this->move = other.move;
+            this->whosTurn = other.whosTurn;
+            this->check = other.check;
+            this->blackKingSideCastled = other.blackKingSideCastled;
+            this->whiteKingSideCastled = other.whiteKingSideCastled;
+            this->whiteQueenSideCastled = other.whiteQueenSideCastled;
+            this->blackQueenSideCastled = other.blackQueenSideCastled;
+            for(int i = 0; i < 64; i++) {
+                if(other.chessBoard[i] == NULL)
+                    this->chessBoard[i] = NULL;
+                else
+                    this->chessBoard[i] = other.chessBoard[i]->clone();
+            }
+        }
+        return *this;
+    }
 };
 
 
